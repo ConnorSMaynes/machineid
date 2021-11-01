@@ -35,7 +35,7 @@ def _get_linux_id():
 		return str(id_).strip()
 
 
-@functools.cache()
+@functools.cache
 def get():
 	systype = platform.system()
 	if systype.lower() == 'windows':
