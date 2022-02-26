@@ -1,11 +1,12 @@
 import winreg
-import functools
 import os
 import platform
 
 __all__ = [
 	'get',
 ]
+
+_machine_id = None
 
 
 def _get_windows_id():
@@ -35,15 +36,16 @@ def _get_linux_id():
 		return str(id_).strip()
 
 
-@functools.cache
 def get():
-	systype = platform.system()
-	if systype.lower() == 'windows':
-		id_ = _get_windows_id()
-	elif systype.lower() == 'linux':
-		id_ = _get_linux_id()
-	else:
-		raise Exception('System, %s, not supported.' % systype)
-	if id_ is None:
+	global _machine_id
+	if _machine_id is None:
+		systype = platform.system()
+		if systype.lower() == 'windows':
+			_machine_id = _get_windows_id()
+		elif systype.lower() == 'linux':
+			_machine_id = _get_linux_id()
+		else:
+			raise Exception('System, %s, not supported.' % systype)
+	if _machine_id is None:
 		raise Exception('A machine id could not be found.')
-	return id_
+	return _machine_id
